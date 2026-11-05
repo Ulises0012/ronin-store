@@ -1,1 +1,66 @@
 @import "tailwindcss";
+
+@theme {
+  --color-brand: #E11D48;
+  --color-pop: #FF9EB5;
+  --color-aqua: #22D3EE;
+  --color-butter: #F2B84B;
+  --color-blush: #FAF5F0;
+  --color-lavender: #F0E4E8;
+  --color-ink: #14121C;
+  --color-card: #FFFFFF;
+  --color-night: #14121C;
+  --font-display: "Fredoka", sans-serif;
+  --font-body: "Nunito", sans-serif;
+  --font-logo: "Chakra Petch", sans-serif;
+  --animate-marquee: marquee 35s linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+}
+
+/* Modo oscuro: solo cambian los valores, las clases son las mismas */
+html.dark {
+  color-scheme: dark;
+  --color-blush: #0F0D16;
+  --color-lavender: #2B2638;
+  --color-ink: #F3ECEF;
+  --color-card: #1C1828;
+  --color-brand: #F43F5E;
+}
+
+body {
+  background-color: var(--color-blush);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+input, textarea, select {
+  color: inherit;
+  font: inherit;
+}
+
+/* Patrón de puntos sutil para secciones de color */
+.patron-puntos {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+
+/* Aparición al hacer scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .animate-marquee { animation: none; }
+}
