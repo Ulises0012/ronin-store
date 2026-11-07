@@ -17,7 +17,6 @@ export default function Footer() {
         <nav className="flex flex-col gap-2 font-bold">
           <Link to="/catalogo">Catálogo</Link>
           <Link to="/personalizar">Personalizar</Link>
-          <Link to="/galeria">Trabajos realizados</Link>
           <Link to="/preguntas">Preguntas frecuentes</Link>
         </nav>
 

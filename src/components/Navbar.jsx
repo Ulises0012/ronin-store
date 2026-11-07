@@ -7,7 +7,6 @@ import ThemeToggle from './ThemeToggle'
 const links = [
   { to: '/catalogo', label: 'Catálogo' },
   { to: '/personalizar', label: 'Personalizar' },
-  { to: '/galeria', label: 'Trabajos' },
   { to: '/preguntas', label: 'Preguntas' },
   { to: '/contacto', label: 'Contacto' },
 ]

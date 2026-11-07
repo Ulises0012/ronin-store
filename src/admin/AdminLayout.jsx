@@ -6,7 +6,7 @@ const links = [
   { to: '/admin', label: 'Productos', end: true },
   { to: '/admin/categorias', label: 'Categorías' },
   { to: '/admin/subcategorias', label: 'Subcategorías' },
-  { to: '/admin/trabajos', label: 'Trabajos' },
+
   { to: '/admin/pedidos', label: 'Pedidos' },
   { to: '/admin/zonas', label: 'Zonas de envío' },
 ]

@@ -5,7 +5,6 @@ export const useTienda = create((set, get) => ({
   categorias: [],
   subcategorias: [],
   productos: [],
-  trabajos: [],
   zonas: [],
   estado: 'idle', // idle | cargando | listo | error
   error: '',
@@ -14,14 +13,13 @@ export const useTienda = create((set, get) => ({
     if (get().estado === 'cargando') return
     set({ estado: 'cargando', error: '' })
     try {
-      const [categorias, subcategorias, productos, trabajos, zonas] = await Promise.all([
+      const [categorias, subcategorias, productos, zonas] = await Promise.all([
         api('/categorias'),
         api('/subcategorias'),
         api('/productos'),
-        api('/trabajos'),
         api('/zonas'),
       ])
-      set({ categorias, subcategorias, productos, trabajos, zonas, estado: 'listo' })
+      set({ categorias, subcategorias, productos,zonas, estado: 'listo' })
     } catch (e) {
       set({ estado: 'error', error: e.message })
     }

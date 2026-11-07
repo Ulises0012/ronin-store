@@ -18,7 +18,6 @@ function resumenUso(c) {
   const partes = []
   if (c.productos) partes.push(`${c.productos} producto(s)`)
   if (c.subcategorias) partes.push(`${c.subcategorias} subcategoría(s)`)
-  if (c.trabajos) partes.push(`${c.trabajos} trabajo(s)`)
   return partes.length ? partes.join(' · ') : 'Sin contenido'
 }
 
