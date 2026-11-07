@@ -14,9 +14,11 @@ import Login from './admin/Login'
 import AdminLayout from './admin/AdminLayout'
 import Productos from './admin/Productos'
 import ProductoForm from './admin/ProductoForm'
+import Categorias from './admin/Categorias'
+import Subcategorias from './admin/Subcategorias'
+import Trabajos from './admin/Trabajos'
 import Pedidos from './admin/Pedidos'
 import Zonas from './admin/Zonas'
-import Subcategorias from './admin/Subcategorias'
 
 export default function App() {
   return (
@@ -37,12 +39,14 @@ export default function App() {
 
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin" element={<AdminLayout />}>
-        <Route path="pedidos" element={<Pedidos />} />
-        <Route path="subcategorias" element={<Subcategorias />} />
-<Route path="zonas" element={<Zonas />} />
           <Route index element={<Productos />} />
           <Route path="productos/nuevo" element={<ProductoForm />} />
           <Route path="productos/:id" element={<ProductoForm />} />
+          <Route path="categorias" element={<Categorias />} />
+          <Route path="subcategorias" element={<Subcategorias />} />
+          <Route path="trabajos" element={<Trabajos />} />
+          <Route path="pedidos" element={<Pedidos />} />
+          <Route path="zonas" element={<Zonas />} />
         </Route>
       </Routes>
     </>
