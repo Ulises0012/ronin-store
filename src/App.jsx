@@ -6,7 +6,6 @@ import Catalogo from './pages/Catalogo'
 import Producto from './pages/Producto'
 import Carrito from './pages/Carrito'
 import Personalizar from './pages/Personalizar'
-import Galeria from './pages/Galeria'
 import Preguntas from './pages/Preguntas'
 import Contacto from './pages/Contacto'
 import NotFound from './pages/NotFound'
@@ -31,7 +30,6 @@ export default function App() {
           <Route path="/producto/:id" element={<Producto />} />
           <Route path="/carrito" element={<Carrito />} />
           <Route path="/personalizar" element={<Personalizar />} />
-          <Route path="/galeria" element={<Galeria />} />
           <Route path="/preguntas" element={<Preguntas />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="*" element={<NotFound />} />
