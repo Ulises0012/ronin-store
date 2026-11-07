@@ -36,7 +36,6 @@ export default function App() {
           <Route path="/contacto" element={<Contacto />} />
           <Route path="*" element={<NotFound />} />
         </Route>
-
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Productos />} />
@@ -44,7 +43,6 @@ export default function App() {
           <Route path="productos/:id" element={<ProductoForm />} />
           <Route path="categorias" element={<Categorias />} />
           <Route path="subcategorias" element={<Subcategorias />} />
-        
           <Route path="pedidos" element={<Pedidos />} />
           <Route path="zonas" element={<Zonas />} />
         </Route>
