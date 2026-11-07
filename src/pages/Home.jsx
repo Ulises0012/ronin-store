@@ -98,16 +98,10 @@ export default function Home() {
           <Reveal as="section" className="mx-auto mt-16 max-w-6xl px-4">
             <h2 className="mb-6 font-display text-3xl font-bold">Explora por categoría</h2>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-              {categorias.map((c) => (
-                <Link
-                  key={c.id}
-                  to={`/catalogo?categoria=${c.id}`}
-                  className={`flex min-h-32 items-end rounded-3xl p-5 font-display text-xl font-semibold transition hover:-translate-y-1 ${colorClase(c.color)}`}
-                >
-                  {c.nombre}
-                </Link>
-              ))}
-            </div>
+  {categorias.map((c) => (
+    <CategoriaCard key={c.id} categoria={c} />
+  ))}
+</div>
           </Reveal>
 
           {destacados.length > 0 && (
