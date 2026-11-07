@@ -13,6 +13,14 @@ export function mensajePedido(p) {
       (i.idea ? `\n   Idea: ${i.idea}` : ''),
   )
 
+  const envio = p.envioACoordinar
+    ? 'Envío: por confirmar'
+    : `Envío (${p.zona}): ${p.costoEnvio === 0 ? 'Gratis' : formatPrecio(p.costoEnvio)}`
+
+  const total = p.envioACoordinar
+    ? `*Total de productos: ${formatPrecio(p.subtotal)}*`
+    : `*Total a pagar: ${formatPrecio(p.total)}*`
+
   return [
     `Hola, quiero confirmar mi pedido *${p.codigo}*`,
     `Soy ${p.cliente}.`,
@@ -20,8 +28,10 @@ export function mensajePedido(p) {
     '*Mi pedido:*',
     ...lineas,
     '',
-    `*Total de productos: ${formatPrecio(p.subtotal)}*`,
-    'Envío: por confirmar',
+    `Subtotal: ${formatPrecio(p.subtotal)}`,
+    envio,
+    total,
+    p.envioACoordinar ? null : `Punto de entrega: ${p.zona} (coordinamos hora y lugar exacto)`,
     p.notas ? `Notas: ${p.notas}` : null,
   ]
     .filter((l) => l !== null)

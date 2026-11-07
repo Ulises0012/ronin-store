@@ -7,6 +7,7 @@ import { usePageTitle } from '../hooks/usePageTitle'
 import ProductCard from '../components/ProductCard'
 import Marquee from '../components/Marquee'
 import Reveal from '../components/Reveal'
+import CategoriaCard from '../components/CategoriaCard'
 import Estado from '../components/Estado'
 
 const pasos = [

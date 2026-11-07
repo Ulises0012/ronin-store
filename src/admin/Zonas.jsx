@@ -100,7 +100,10 @@ export default function Zonas() {
   return (
     <>
       <h1 className="font-display text-3xl font-bold">Zonas de envío</h1>
-
+      <p className="mt-2">
+        Los puntos con precio fijo (por ejemplo, Plaza Mundo) aparecen en el carrito para que el
+        cliente los elija. Los marcados como "a coordinar" no se muestran al cliente.
+      </p>
       <form
         onSubmit={guardar}
         className="mt-6 flex max-w-2xl flex-col gap-4 rounded-3xl border-2 border-lavender bg-card p-5"

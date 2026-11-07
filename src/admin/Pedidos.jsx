@@ -150,10 +150,13 @@ export default function Pedidos() {
     }
   }, [])
 
-  useEffect(() => {
+   useEffect(() => {
     cargar()
-    const timer = setInterval(cargar, 30000)
-    return () => clearInterval(timer)
+    const alVolver = () => {
+      if (document.visibilityState === 'visible') cargar()
+    }
+    document.addEventListener('visibilitychange', alVolver)
+    return () => document.removeEventListener('visibilitychange', alVolver)
   }, [cargar])
 
   async function cambiarEstado(p, estado) {

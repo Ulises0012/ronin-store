@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCarrito } from '../store/carrito'
+import { useTienda } from '../store/tienda'
 import { api } from '../utils/api'
 import { formatPrecio } from '../utils/format'
 import { whatsappLink, mensajePedido } from '../utils/whatsapp'
@@ -30,14 +31,22 @@ function guardarPedido(p) {
   }
 }
 
+const textoEnvio = (p) =>
+  p.envioACoordinar ? 'Por confirmar' : p.costoEnvio === 0 ? 'Gratis' : formatPrecio(p.costoEnvio)
+
 export default function Carrito() {
   usePageTitle('Carrito')
   const items = useCarrito((s) => s.items)
   const cambiarCantidad = useCarrito((s) => s.cambiarCantidad)
   const quitar = useCarrito((s) => s.quitar)
   const vaciar = useCarrito((s) => s.vaciar)
+  const zonas = useTienda((s) => s.zonas)
 
-  const [form, setForm] = useState({ cliente: '', telefono: '', correo: '', notas: '' })
+  // Solo los puntos con precio fijo se pueden elegir en el carrito
+  const puntos = zonas.filter((z) => !z.aCoordinar)
+
+  const [form, setForm] = useState({ cliente: '', telefono: '', correo: '', notas: '', zonaId: '' })
+  const [usaPunto, setUsaPunto] = useState(false)
   const [enviando, setEnviando] = useState(false)
   const [error, setError] = useState('')
   const [pedido, setPedido] = useState(leerPedidoGuardado)
@@ -45,6 +54,11 @@ export default function Carrito() {
   const [mostrarEnlace, setMostrarEnlace] = useState(false)
 
   const cambiar = (nombre, valor) => setForm((f) => ({ ...f, [nombre]: valor }))
+
+  function alternarPunto(marcado) {
+    setUsaPunto(marcado)
+    if (!marcado) cambiar('zonaId', '')
+  }
 
   // Al crear el pedido, abre WhatsApp solo (el cliente únicamente toca "Enviar")
   useEffect(() => {
@@ -80,7 +94,7 @@ export default function Carrito() {
         {abriendo ? (
           <p role="status" className="mt-4 text-lg font-bold">
             Abriendo WhatsApp... Cuando se abra, solo toca <em>Enviar</em> para que confirmemos tu
-            pedido y acordemos la dirección y el envío.
+            pedido y acordemos los detalles de la entrega.
           </p>
         ) : (
           <p className="mt-4 text-lg">
@@ -110,8 +124,15 @@ export default function Carrito() {
             <span>{formatPrecio(pedido.subtotal)}</span>
           </p>
           <p className="flex justify-between">
-            <span>Envío</span>
-            <span>Por confirmar</span>
+            <span>Envío{pedido.zona ? ` (${pedido.zona})` : ''}</span>
+            <span>{textoEnvio(pedido)}</span>
+          </p>
+          <p className="mt-2 flex justify-between text-xl font-bold">
+            <span>Total</span>
+            <span className="text-brand">
+              {formatPrecio(pedido.total)}
+              {pedido.envioACoordinar && ' + envío'}
+            </span>
           </p>
         </div>
 
@@ -138,7 +159,15 @@ export default function Carrito() {
     )
   }
 
+  // ----- Cálculo para mostrar (el servidor lo vuelve a calcular al guardar) -----
   const subtotal = items.reduce((suma, i) => suma + i.precio * i.cantidad, 0)
+  const punto = usaPunto ? puntos.find((z) => String(z.id) === form.zonaId) : null
+  const envio = punto
+    ? punto.gratisDesde !== null && subtotal >= punto.gratisDesde
+      ? 0
+      : punto.costo
+    : null
+  const total = subtotal + (envio ?? 0)
 
   async function enviar(e) {
     e.preventDefault()
@@ -150,6 +179,7 @@ export default function Carrito() {
         telefono: form.telefono,
         correo: form.correo,
         notas: form.notas,
+        zonaId: usaPunto ? Number(form.zonaId) : null,
         items: items.map((i) => ({ id: i.id, cantidad: i.cantidad, idea: i.idea })),
       }
       const resultado = await api('/pedidos', { method: 'POST', body })
@@ -268,6 +298,54 @@ export default function Carrito() {
           <span className="text-sm font-normal">Solo lo usamos para avisarte sobre tu pedido.</span>
         </label>
 
+        {puntos.length > 0 && (
+          <fieldset className="flex flex-col gap-3 rounded-3xl border-2 border-lavender bg-card p-4">
+            <legend className="px-2 font-display text-xl font-semibold">Entrega</legend>
+
+            <label className="flex min-h-11 items-start gap-3 font-bold">
+              <input
+                type="checkbox"
+                checked={usaPunto}
+                onChange={(e) => alternarPunto(e.target.checked)}
+                className="mt-1 size-5"
+              />
+              Puedo recibir mi pedido en un punto de entrega cerca de Soyapango o San Salvador
+            </label>
+
+            {usaPunto ? (
+              <label className="flex flex-col gap-2 font-bold">
+                Elige el punto de entrega
+                <select
+                  value={form.zonaId}
+                  onChange={(e) => cambiar('zonaId', e.target.value)}
+                  className={campo}
+                  required
+                >
+                  <option value="">Elige un lugar</option>
+                  {puntos.map((z) => (
+                    <option key={z.id} value={z.id}>
+                      {z.nombre} ({z.costo === 0 ? 'envío gratis' : formatPrecio(z.costo)})
+                    </option>
+                  ))}
+                </select>
+                {punto && punto.gratisDesde !== null && (
+                  <span className="text-sm font-normal">
+                    Envío gratis en compras desde {formatPrecio(punto.gratisDesde)}.
+                  </span>
+                )}
+                <span className="text-sm font-normal">
+                  Después acordamos por WhatsApp la hora y el lugar exacto.
+                </span>
+              </label>
+            ) : (
+              <p className="text-sm">
+                Si prefieres otra dirección, no marques la casilla: el costo y la dirección los
+                acordamos por WhatsApp.
+              </p>
+            )}
+          </fieldset>
+        )}
+
         <label className="flex flex-col gap-2 font-bold">
           Notas del pedido (opcional)
           <textarea
@@ -286,11 +364,19 @@ export default function Carrito() {
           </p>
           <p className="flex justify-between">
             <span>Envío</span>
-            <span>Por confirmar</span>
+            <span>
+              {envio === null ? 'Por confirmar' : envio === 0 ? 'Gratis' : formatPrecio(envio)}
+            </span>
+          </p>
+          <p className="mt-2 flex justify-between text-2xl font-bold">
+            <span>Total</span>
+            <span className="text-brand">
+              {formatPrecio(total)}
+              {envio === null && ' + envío'}
+            </span>
           </p>
           <p className="mt-3 text-sm">
             Al hacer tu pedido se abrirá WhatsApp con el mensaje listo: solo toca <em>Enviar</em>.
-            La dirección y el costo del envío los acordamos por ahí.
           </p>
         </div>
 
